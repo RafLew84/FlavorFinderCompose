@@ -1,11 +1,15 @@
 package com.example.flavorfindercompose.data.repository
 
+import android.app.Application
 import com.example.flavorfindercompose.data.api.RetrofitInstance
-import com.example.flavorfindercompose.data.db.FoodDao
+import com.example.flavorfindercompose.data.db.MealDatabase
 import com.example.flavorfindercompose.data.model.Meal
 import kotlinx.coroutines.flow.Flow
 
-class FoodRepository(private val foodDao: FoodDao) {
+class FoodRepository(private val application: Application) {
+
+    private val foodDao = MealDatabase.getDatabase(application).foodDao()
+
     suspend fun getFood() = RetrofitInstance.api.getFood()
     suspend fun getFoodById(id: String) = RetrofitInstance.api.getFoodById(id)
 
