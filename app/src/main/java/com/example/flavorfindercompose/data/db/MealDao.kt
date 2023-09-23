@@ -1,6 +1,5 @@
 package com.example.flavorfindercompose.data.db
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -10,7 +9,7 @@ import com.example.flavorfindercompose.data.model.Meal
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface FoodDao {
+interface MealDao {
     @Insert(onConflict = REPLACE)
     suspend fun insert(meal: Meal)
 

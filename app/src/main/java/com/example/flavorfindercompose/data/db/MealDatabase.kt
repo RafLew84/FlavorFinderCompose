@@ -8,7 +8,7 @@ import com.example.flavorfindercompose.data.model.Meal
 
 @Database(entities = [Meal::class], version = 1, exportSchema = false)
 abstract class MealDatabase : RoomDatabase() {
-    abstract fun foodDao(): FoodDao
+    abstract fun mealDao(): MealDao
 
     companion object{
         @Volatile private var INSTANCE: MealDatabase? = null

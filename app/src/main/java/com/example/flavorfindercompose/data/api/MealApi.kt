@@ -5,7 +5,7 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface FoodApi {
+interface MealApi {
     @GET("api/json/v1/1/filter.php?a=Polish")
     suspend fun getFood() : Response<MealResponse>
 

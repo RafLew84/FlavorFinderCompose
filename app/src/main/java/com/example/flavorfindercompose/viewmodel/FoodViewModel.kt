@@ -1,11 +1,10 @@
 package com.example.flavorfindercompose.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.flavorfindercompose.data.model.MealResponse
-import com.example.flavorfindercompose.data.repository.FoodRepository
+import com.example.flavorfindercompose.data.repository.MealRepository
 import com.example.flavorfindercompose.util.Resource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +13,7 @@ import retrofit2.Response
 
 class FoodViewModel(application: Application) : ViewModel() {
 
-    private val repository = FoodRepository(application)
+    private val repository = MealRepository(application)
     private var _meals: MutableStateFlow<Resource<MealResponse>> = MutableStateFlow(Resource.Loading())
     val meals: StateFlow<Resource<MealResponse>> = _meals
 
@@ -35,7 +34,7 @@ class FoodViewModel(application: Application) : ViewModel() {
 
     private fun getMealList() = viewModelScope.launch {
         _meals.value = Resource.Loading()
-        val response = repository.getFood()
+        val response = repository.getMeal()
         _meals.value = handleMealResponse(response)
     }
 
