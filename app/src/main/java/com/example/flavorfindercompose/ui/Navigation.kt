@@ -30,7 +30,7 @@ fun Navigation() {
     val navController = rememberNavController()
     val viewModel: FoodViewModel = viewModel(
         LocalViewModelStoreOwner.current!!,
-        "TaskViewModel",
+        "MealViewModel",
         FoodViewModelFactory(LocalContext.current.applicationContext as Application)
     )
 
