@@ -3,6 +3,7 @@ package com.example.flavorfindercompose.ui.screens
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,19 +29,19 @@ import com.example.flavorfindercompose.util.Resource
 import com.example.flavorfindercompose.viewmodel.FoodViewModel
 
 @Composable
-fun MealsScreen(navController: NavController, viewModel: FoodViewModel) {
+fun MealsScreen(navController: NavController, viewModel: FoodViewModel, paddingValues: PaddingValues) {
     val response by viewModel.meals.collectAsStateWithLifecycle()
 
     when (response) {
-        is Resource.Success -> { response.data?.let { ShowList(meals = it) } }
+        is Resource.Success -> { response.data?.let { ShowList(meals = it, paddingValues) } }
         is Resource.Error -> {  }
         is Resource.Loading -> {  }
     }
 }
 
 @Composable
-private fun ShowList(meals: MealResponse) {
-    LazyColumn {
+private fun ShowList(meals: MealResponse, paddingValues: PaddingValues) {
+    LazyColumn(modifier = Modifier.padding(paddingValues)) {
         items(meals.meals) { meal ->
             Column(
                 modifier = Modifier.fillMaxSize(),
