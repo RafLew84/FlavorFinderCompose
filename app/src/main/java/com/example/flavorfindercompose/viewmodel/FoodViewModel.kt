@@ -1,6 +1,7 @@
 package com.example.flavorfindercompose.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.flavorfindercompose.data.model.MealResponse
@@ -15,7 +16,7 @@ class FoodViewModel(application: Application) : ViewModel() {
 
     private val repository = FoodRepository(application)
     private var _meals: MutableStateFlow<Resource<MealResponse>> = MutableStateFlow(Resource.Loading())
-    val comments: StateFlow<Resource<MealResponse>> = _meals
+    val meals: StateFlow<Resource<MealResponse>> = _meals
 
 //    val mealList: LiveData<Resource<MealResponse>>
 //        get() = _mealList
@@ -26,13 +27,13 @@ class FoodViewModel(application: Application) : ViewModel() {
 //    val readAllData: LiveData<List<Meal>>
 
     init {
-        //getMealList()
+        getMealList()
         //val foodDao = MealDatabase.getDatabase(application).foodDao()
         //repository = FoodRepository(foodDao)
         //readAllData = repository.readAllData
     }
 
-    fun getMealList() = viewModelScope.launch {
+    private fun getMealList() = viewModelScope.launch {
         _meals.value = Resource.Loading()
         val response = repository.getFood()
         _meals.value = handleMealResponse(response)
