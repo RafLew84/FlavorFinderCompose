@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.flavorfindercompose.data.model.MealResponse
 import com.example.flavorfindercompose.data.repository.MealRepository
 import com.example.flavorfindercompose.util.Resource
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -35,6 +36,7 @@ class FoodViewModel(application: Application) : ViewModel() {
     private fun getMealList() = viewModelScope.launch {
         _meals.value = Resource.Loading()
         val response = repository.getMeal()
+        delay(2000L)
         _meals.value = handleMealResponse(response)
     }
 

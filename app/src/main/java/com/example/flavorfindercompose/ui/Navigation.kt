@@ -19,6 +19,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.flavorfindercompose.ui.screens.DetailScreen
 import com.example.flavorfindercompose.ui.screens.FavoriteScreen
 import com.example.flavorfindercompose.ui.screens.MealsScreen
 import com.example.flavorfindercompose.viewmodel.FoodViewModel
@@ -70,6 +71,16 @@ fun BottomNavGraph(navController: NavHostController, viewModel: FoodViewModel, p
                 viewModel = viewModel,
                 paddingValues = paddingValues
             )
+        }
+
+        composable(route = Screens.Details.route + "/{arg}"){
+            val arg = it.arguments?.getString("arg")
+            if (arg != null)
+                DetailScreen(
+                    id = arg,
+                    viewModel = viewModel,
+                    onHome = { navController.popBackStack() }
+                )
         }
     }
 }

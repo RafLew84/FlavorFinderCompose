@@ -1,6 +1,6 @@
 package com.example.flavorfindercompose.ui.screens
 
-import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,9 +9,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,6 +27,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.flavorfindercompose.data.model.MealResponse
+import com.example.flavorfindercompose.ui.Screens
 import com.example.flavorfindercompose.util.Resource
 import com.example.flavorfindercompose.viewmodel.FoodViewModel
 
@@ -33,14 +36,41 @@ fun MealsScreen(navController: NavController, viewModel: FoodViewModel, paddingV
     val response by viewModel.meals.collectAsStateWithLifecycle()
 
     when (response) {
-        is Resource.Success -> { response.data?.let { ShowList(meals = it, paddingValues) } }
-        is Resource.Error -> {  }
-        is Resource.Loading -> {  }
+        is Resource.Success -> { response.data?.let { ShowList(meals = it, paddingValues, navController) } }
+        is Resource.Error -> { response.message?.let { ShowErrorMessage(message = it) } }
+        is Resource.Loading -> { ShowLoadingBar() }
     }
 }
 
 @Composable
-private fun ShowList(meals: MealResponse, paddingValues: PaddingValues) {
+private fun ShowErrorMessage(message: String) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "An error has occurred\n\n$message",
+            fontSize = 48.sp
+        )
+    }
+}
+
+@Composable
+private fun ShowLoadingBar() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier.width(64.dp)
+        )
+    }
+}
+
+@Composable
+private fun ShowList(meals: MealResponse, paddingValues: PaddingValues, navController: NavController) {
     LazyColumn(modifier = Modifier.padding(paddingValues)) {
         items(meals.meals) { meal ->
             Column(
@@ -52,16 +82,21 @@ private fun ShowList(meals: MealResponse, paddingValues: PaddingValues) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 4.dp, end = 4.dp)
+                        .clickable { navController.navigate(Screens.Details.withArgs(meal.idMeal)) }
                 ) {
                     AsyncImage(
                         model = meal.strMealThumb,
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxWidth().height(200.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
                     )
                     Text(
                         text = meal.strMeal,
-                        Modifier.padding(4.dp).fillMaxWidth(),
+                        Modifier
+                            .padding(4.dp)
+                            .fillMaxWidth(),
                         textAlign = TextAlign.Center,
                         fontSize = 24.sp
                     )
