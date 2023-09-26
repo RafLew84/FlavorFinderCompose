@@ -9,7 +9,9 @@ import com.example.flavorfindercompose.data.repository.MealRepository
 import com.example.flavorfindercompose.util.Resource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
@@ -23,24 +25,22 @@ class FoodViewModel(application: Application) : ViewModel() {
     private var _meal: MutableStateFlow<Resource<MealResponse>> = MutableStateFlow(Resource.Loading())
     val meal: StateFlow<Resource<MealResponse>> = _meal
 
-//    val mealList: LiveData<Resource<MealResponse>>
-//        get() = _mealList
-//
-//    val meal: LiveData<Resource<MealResponse>>
-//        get() = _meal
-//
-//    val readAllData: LiveData<List<Meal>>
+    val localMeals: StateFlow<List<Meal>> = repository.readData.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(),
+        emptyList()
+    )
 
     init {
-        getMealList()
+        fetchData()
         //val foodDao = MealDatabase.getDatabase(application).foodDao()
         //repository = FoodRepository(foodDao)
         //readAllData = repository.readAllData
     }
 
-    private fun getMealList() = viewModelScope.launch {
+    private fun fetchData() = viewModelScope.launch {
         _meals.value = Resource.Loading()
-        val response = repository.getMeal()
+        val response = repository.fetchData()
         delay(2000L)
         _meals.value = handleMealResponse(response)
     }
@@ -52,9 +52,9 @@ class FoodViewModel(application: Application) : ViewModel() {
         return Resource.Error(response.message())
     }
 
-    fun getMealById(id: String) = viewModelScope.launch {
+    fun fetchById(id: String) = viewModelScope.launch {
         _meal.value = Resource.Loading()
-        val response = repository.getMealById(id)
+        val response = repository.fetchById(id)
         delay(2000L)
         _meal.value = handleMealResponse(response)
     }
