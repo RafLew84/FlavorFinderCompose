@@ -36,41 +36,19 @@ fun MealsScreen(navController: NavController, viewModel: FoodViewModel, paddingV
     val response by viewModel.meals.collectAsStateWithLifecycle()
 
     when (response) {
-        is Resource.Success -> { response.data?.let { ShowList(meals = it, paddingValues, navController) } }
+        is Resource.Success -> { response.data?.let { ShowList(meals = it, paddingValues, navController, viewModel) } }
         is Resource.Error -> { response.message?.let { ShowErrorMessage(message = it) } }
         is Resource.Loading -> { ShowLoadingBar() }
     }
 }
 
 @Composable
-private fun ShowErrorMessage(message: String) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "An error has occurred\n\n$message",
-            fontSize = 48.sp
-        )
-    }
-}
-
-@Composable
-private fun ShowLoadingBar() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        CircularProgressIndicator(
-            modifier = Modifier.width(64.dp)
-        )
-    }
-}
-
-@Composable
-private fun ShowList(meals: MealResponse, paddingValues: PaddingValues, navController: NavController) {
+private fun ShowList(
+    meals: MealResponse,
+    paddingValues: PaddingValues,
+    navController: NavController,
+    viewModel: FoodViewModel
+) {
     LazyColumn(modifier = Modifier.padding(paddingValues)) {
         items(meals.meals) { meal ->
             Column(
@@ -82,7 +60,10 @@ private fun ShowList(meals: MealResponse, paddingValues: PaddingValues, navContr
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 4.dp, end = 4.dp)
-                        .clickable { navController.navigate(Screens.Details.withArgs(meal.idMeal)) }
+                        .clickable {
+                            viewModel.getMealById(meal.idMeal)
+                            navController.navigate(Screens.Details.route)
+                        }
                 ) {
                     AsyncImage(
                         model = meal.strMealThumb,

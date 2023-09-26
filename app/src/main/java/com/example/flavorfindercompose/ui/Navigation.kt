@@ -41,17 +41,6 @@ fun Navigation() {
             BottomNavGraph(navController = navController, viewModel, paddingValues)
         }
     )
-
-//        composable(route = Screens.Update.route + "/{arg}"){
-//            val arg = it.arguments?.getString("arg")
-//            if (arg != null)
-//                UpdateTaskScreen(
-//                    id = arg,
-//                    viewModel = viewModel,
-//                    onHome = { navController.popBackStack() }
-//                )
-//        }
-//    }
 }
 
 @Composable
@@ -73,14 +62,12 @@ fun BottomNavGraph(navController: NavHostController, viewModel: FoodViewModel, p
             )
         }
 
-        composable(route = Screens.Details.route + "/{arg}"){
-            val arg = it.arguments?.getString("arg")
-            if (arg != null)
-                DetailScreen(
-                    id = arg,
-                    viewModel = viewModel,
-                    onHome = { navController.popBackStack() }
-                )
+        composable(route = Screens.Details.route){
+            DetailScreen(
+                viewModel = viewModel,
+                onHome = { navController.popBackStack() },
+                paddingValues = paddingValues
+            )
         }
     }
 }
