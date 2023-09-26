@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.example.flavorfindercompose.ui.screens.components.ShowList
 import com.example.flavorfindercompose.viewmodel.FoodViewModel
 
 @Composable

@@ -33,9 +33,6 @@ class FoodViewModel(application: Application) : ViewModel() {
 
     init {
         fetchData()
-        //val foodDao = MealDatabase.getDatabase(application).foodDao()
-        //repository = FoodRepository(foodDao)
-        //readAllData = repository.readAllData
     }
 
     private fun fetchData() = viewModelScope.launch {
@@ -62,8 +59,10 @@ class FoodViewModel(application: Application) : ViewModel() {
     fun insert(meal: Meal) = viewModelScope.launch {
         repository.insert(meal)
     }
-//
-//    fun delete(meal: Meal) = viewModelScope.launch {
-//        repository.delete(meal)
-//    }
+
+    fun delete(meal: Meal) = viewModelScope.launch {
+        repository.delete(meal)
+    }
+
+    fun checkIfExistInLocalDb(meal: Meal): Boolean = meal in localMeals.value
 }
