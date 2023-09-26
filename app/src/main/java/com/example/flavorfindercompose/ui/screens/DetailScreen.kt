@@ -11,8 +11,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,7 +41,6 @@ import com.example.flavorfindercompose.viewmodel.FoodViewModel
 
 @Composable
 fun DetailScreen(
-    onHome: () -> Unit,
     viewModel: FoodViewModel,
     paddingValues: PaddingValues
 ){
@@ -44,7 +50,7 @@ fun DetailScreen(
         is Resource.Success -> {
             response.data?.let {
                 val meal = it.meals.first()
-                ShowMeal(meal, paddingValues)
+                ShowMeal(meal, viewModel, paddingValues)
             }
         }
         is Resource.Error -> { response.message?.let { ShowErrorMessage(message = it) } }
@@ -52,52 +58,61 @@ fun DetailScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShowMeal(
     meal: Meal,
+    viewModel: FoodViewModel,
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier
 ) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(paddingValues)
-            .verticalScroll(rememberScrollState()),
-        shape = RoundedCornerShape(15.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .height(200.dp)
+    Scaffold(
+        modifier = Modifier.padding(paddingValues),
+        floatingActionButton = {
+            AddToFavoriteFAB(onClick = { viewModel.insert(meal) })
+        },
+    ) { scaffoldPaddingValues ->
+        Card(
+            modifier = modifier
                 .fillMaxWidth()
+                .padding(scaffoldPaddingValues)
+                .verticalScroll(rememberScrollState()),
+            shape = RoundedCornerShape(15.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
         ) {
-            MealImage(meal.strMealThumb)
-            Gradient()
-            Text(
-                text = meal.strMeal,
+            Box(
                 modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(12.dp),
-                fontSize = 24.sp,
-                style = TextStyle(color = Color.White),
-                fontWeight = FontWeight.Bold
-            )
-        }
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Text(
-                text = meal.strCategory,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = meal.strInstructions,
-                modifier = Modifier.padding(start = 16.dp, top = 24.dp, end = 16.dp )
-            )
+                    .height(200.dp)
+                    .fillMaxWidth()
+            ) {
+                MealImage(meal.strMealThumb)
+                Gradient()
+                Text(
+                    text = meal.strMeal,
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(12.dp),
+                    fontSize = 24.sp,
+                    style = TextStyle(color = Color.White),
+                    fontWeight = FontWeight.Bold
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = meal.strCategory,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = meal.strInstructions,
+                    modifier = Modifier.padding(start = 16.dp, top = 24.dp, end = 16.dp)
+                )
+            }
         }
     }
 }
@@ -127,4 +142,21 @@ private fun MealImage(url: String) {
         contentScale = ContentScale.Crop,
         modifier = Modifier.fillMaxWidth()
     )
+}
+
+@Composable
+private fun AddToFavoriteFAB(
+    onClick: () -> Unit
+) {
+    FloatingActionButton(
+        onClick = onClick,
+        elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(10.dp),
+        containerColor = Color(100, 220, 237),
+        shape = FloatingActionButtonDefaults.smallShape
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Add,
+            contentDescription = "Add item"
+        )
+    }
 }

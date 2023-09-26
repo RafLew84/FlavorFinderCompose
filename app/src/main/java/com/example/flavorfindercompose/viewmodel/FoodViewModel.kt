@@ -3,6 +3,7 @@ package com.example.flavorfindercompose.viewmodel
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.flavorfindercompose.data.model.Meal
 import com.example.flavorfindercompose.data.model.MealResponse
 import com.example.flavorfindercompose.data.repository.MealRepository
 import com.example.flavorfindercompose.util.Resource
@@ -57,10 +58,10 @@ class FoodViewModel(application: Application) : ViewModel() {
         delay(2000L)
         _meal.value = handleMealResponse(response)
     }
-//
-//    fun insert(meal: Meal) = viewModelScope.launch {
-//        repository.insert(meal)
-//    }
+
+    fun insert(meal: Meal) = viewModelScope.launch {
+        repository.insert(meal)
+    }
 //
 //    fun delete(meal: Meal) = viewModelScope.launch {
 //        repository.delete(meal)

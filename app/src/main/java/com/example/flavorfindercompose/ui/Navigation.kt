@@ -65,7 +65,6 @@ fun BottomNavGraph(navController: NavHostController, viewModel: FoodViewModel, p
         composable(route = Screens.Details.route){
             DetailScreen(
                 viewModel = viewModel,
-                onHome = { navController.popBackStack() },
                 paddingValues = paddingValues
             )
         }
