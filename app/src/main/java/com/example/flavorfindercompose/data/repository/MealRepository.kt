@@ -6,7 +6,7 @@ import com.example.flavorfindercompose.data.db.MealDatabase
 import com.example.flavorfindercompose.data.model.Meal
 import kotlinx.coroutines.flow.Flow
 
-class MealRepository(private val application: Application) {
+class MealRepository(application: Application) {
 
     private val mealDao = MealDatabase.getDatabase(application).mealDao()
 
